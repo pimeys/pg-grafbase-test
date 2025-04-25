@@ -1,0 +1,3877 @@
+extend schema
+  @link(
+    url: "https://grafbase.com/extensions/postgres/0.1.0",
+    import: [
+      "@pgDatabase",
+      "@pgTable",
+      "@pgColumn",
+      "@pgEnum",
+      "@pgEnumVariant",
+      "@pgRelation",
+      "@pgKey",
+      "@pgSelectOne",
+      "@pgSelectMany",
+      "@pgInsertOne",
+      "@pgInsertMany",
+      "@pgUpdateOne",
+      "@pgUpdateMany",
+      "@pgDeleteOne",
+      "@pgDeleteMany",
+      "@pgConnection",
+      "@pgMutation",
+      "@pgReturning",
+      "PgKeyType",
+      "PgColumnType"
+    ]
+  )
+  @pgDatabase(name: "default")
+
+"""
+JSON data type
+"""
+scalar JSON
+
+"""
+Binary data type
+"""
+scalar Bytes
+
+"""
+Big integer data type
+"""
+scalar BigInt
+
+"""
+Decimal data type
+"""
+scalar Decimal
+
+"""
+Specifies the direction for ordering results.
+"""
+enum OrderDirection {
+  """
+  Specifies an ascending order for a given orderBy argument.
+  """
+  ASC
+  """
+  Specifies a descending order for a given orderBy argument.
+  """
+  DESC
+}
+
+"""
+Enumerated type for the possible statuses of an order.
+"""
+enum OrderStatusEnum @pgEnum(name: "order_status_enum") {
+  PENDING @pgEnumVariant(name: "pending")
+  PROCESSING @pgEnumVariant(name: "processing")
+  SHIPPED @pgEnumVariant(name: "shipped")
+  DELIVERED @pgEnumVariant(name: "delivered")
+  CANCELLED @pgEnumVariant(name: "cancelled")
+}
+
+"""
+Enumerated type for different roles a user can have.
+"""
+enum UserRoleEnum @pgEnum(name: "user_role_enum") {
+  CUSTOMER @pgEnumVariant(name: "customer")
+  ADMIN @pgEnumVariant(name: "admin")
+  SUPPORT @pgEnumVariant(name: "support")
+}
+
+"""
+Search filter input for String type.
+"""
+input StringFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: String
+  """
+  The value is not the one given
+  """
+  ne: String
+  """
+  The value is greater than the one given
+  """
+  gt: String
+  """
+  The value is less than the one given
+  """
+  lt: String
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: String
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: String
+  """
+  The given input is part of the column value
+  """
+  like: String
+  """
+  The value is in the given array of values
+  """
+  in: [String]
+  """
+  The value is not in the given array of values
+  """
+  nin: [String]
+  """
+  A negation of the given filter
+  """
+  not: StringFilterInput
+}
+
+"""
+Update input for String type.
+"""
+input StringUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: String
+}
+
+"""
+Update input for String array type.
+"""
+input StringArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [String]
+  """
+  Append an array value to the column.
+  """
+  append: [String]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [String]
+}
+
+"""
+Search filter input for BigInt type.
+"""
+input BigIntFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: BigInt
+  """
+  The value is not the one given
+  """
+  ne: BigInt
+  """
+  The value is greater than the one given
+  """
+  gt: BigInt
+  """
+  The value is less than the one given
+  """
+  lt: BigInt
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: BigInt
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: BigInt
+  """
+  The value is in the given array of values
+  """
+  in: [BigInt]
+  """
+  The value is not in the given array of values
+  """
+  nin: [BigInt]
+  """
+  A negation of the given filter
+  """
+  not: BigIntFilterInput
+}
+
+"""
+Update input for BigInt type.
+"""
+input BigIntUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: BigInt
+  """
+  Increments the value of a field by the specified value.
+  """
+  increment: BigInt
+  """
+  Decrements the value of a field by the specified value.
+  """
+  decrement: BigInt
+  """
+  Multiplies the value of a field by the specified value.
+  """
+  multiply: BigInt
+  """
+  Divides the value of a field by the specified value.
+  """
+  divide: BigInt
+}
+
+"""
+Update input for BigInt array type.
+"""
+input BigIntArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [BigInt]
+  """
+  Append an array value to the column.
+  """
+  append: [BigInt]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [BigInt]
+}
+
+"""
+Search filter input for Int type.
+"""
+input IntFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: Int
+  """
+  The value is not the one given
+  """
+  ne: Int
+  """
+  The value is greater than the one given
+  """
+  gt: Int
+  """
+  The value is less than the one given
+  """
+  lt: Int
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: Int
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: Int
+  """
+  The value is in the given array of values
+  """
+  in: [Int]
+  """
+  The value is not in the given array of values
+  """
+  nin: [Int]
+  """
+  A negation of the given filter
+  """
+  not: IntFilterInput
+}
+
+"""
+Update input for Int type.
+"""
+input IntUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: Int
+  """
+  Increments the value of a field by the specified value.
+  """
+  increment: Int
+  """
+  Decrements the value of a field by the specified value.
+  """
+  decrement: Int
+  """
+  Multiplies the value of a field by the specified value.
+  """
+  multiply: Int
+  """
+  Divides the value of a field by the specified value.
+  """
+  divide: Int
+}
+
+"""
+Update input for Int array type.
+"""
+input IntArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [Int]
+  """
+  Append an array value to the column.
+  """
+  append: [Int]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [Int]
+}
+
+"""
+Search filter input for Float type.
+"""
+input FloatFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: Float
+  """
+  The value is not the one given
+  """
+  ne: Float
+  """
+  The value is greater than the one given
+  """
+  gt: Float
+  """
+  The value is less than the one given
+  """
+  lt: Float
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: Float
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: Float
+  """
+  The value is in the given array of values
+  """
+  in: [Float]
+  """
+  The value is not in the given array of values
+  """
+  nin: [Float]
+  """
+  A negation of the given filter
+  """
+  not: FloatFilterInput
+}
+
+"""
+Update input for Float type.
+"""
+input FloatUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: Float
+  """
+  Increments the value of a field by the specified value.
+  """
+  increment: Float
+  """
+  Decrements the value of a field by the specified value.
+  """
+  decrement: Float
+  """
+  Multiplies the value of a field by the specified value.
+  """
+  multiply: Float
+  """
+  Divides the value of a field by the specified value.
+  """
+  divide: Float
+}
+
+"""
+Update input for Float array type.
+"""
+input FloatArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [Float]
+  """
+  Append an array value to the column.
+  """
+  append: [Float]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [Float]
+}
+
+"""
+Search filter input for Boolean type.
+"""
+input BooleanFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: Boolean
+  """
+  The value is not the one given
+  """
+  ne: Boolean
+  """
+  The value is greater than the one given
+  """
+  gt: Boolean
+  """
+  The value is less than the one given
+  """
+  lt: Boolean
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: Boolean
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: Boolean
+  """
+  The value is in the given array of values
+  """
+  in: [Boolean]
+  """
+  The value is not in the given array of values
+  """
+  nin: [Boolean]
+  """
+  A negation of the given filter
+  """
+  not: BooleanFilterInput
+}
+
+"""
+Update input for Boolean type.
+"""
+input BooleanUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: Boolean
+}
+
+"""
+Update input for Boolean array type.
+"""
+input BooleanArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [Boolean]
+  """
+  Append an array value to the column.
+  """
+  append: [Boolean]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [Boolean]
+}
+
+"""
+Search filter input for Decimal type.
+"""
+input DecimalFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: Decimal
+  """
+  The value is not the one given
+  """
+  ne: Decimal
+  """
+  The value is greater than the one given
+  """
+  gt: Decimal
+  """
+  The value is less than the one given
+  """
+  lt: Decimal
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: Decimal
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: Decimal
+  """
+  The value is in the given array of values
+  """
+  in: [Decimal]
+  """
+  The value is not in the given array of values
+  """
+  nin: [Decimal]
+  """
+  A negation of the given filter
+  """
+  not: DecimalFilterInput
+}
+
+"""
+Update input for Decimal type.
+"""
+input DecimalUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: Decimal
+  """
+  Increments the value of a field by the specified value.
+  """
+  increment: Decimal
+  """
+  Decrements the value of a field by the specified value.
+  """
+  decrement: Decimal
+  """
+  Multiplies the value of a field by the specified value.
+  """
+  multiply: Decimal
+  """
+  Divides the value of a field by the specified value.
+  """
+  divide: Decimal
+}
+
+"""
+Update input for Decimal array type.
+"""
+input DecimalArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [Decimal]
+  """
+  Append an array value to the column.
+  """
+  append: [Decimal]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [Decimal]
+}
+
+"""
+Search filter input for Bytes type.
+"""
+input BytesFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: Bytes
+  """
+  The value is not the one given
+  """
+  ne: Bytes
+  """
+  The value is greater than the one given
+  """
+  gt: Bytes
+  """
+  The value is less than the one given
+  """
+  lt: Bytes
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: Bytes
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: Bytes
+  """
+  The value is in the given array of values
+  """
+  in: [Bytes]
+  """
+  The value is not in the given array of values
+  """
+  nin: [Bytes]
+  """
+  A negation of the given filter
+  """
+  not: BytesFilterInput
+}
+
+"""
+Update input for Bytes type.
+"""
+input BytesUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: Bytes
+}
+
+"""
+Update input for Bytes array type.
+"""
+input BytesArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [Bytes]
+  """
+  Append an array value to the column.
+  """
+  append: [Bytes]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [Bytes]
+}
+
+"""
+Search filter input for JSON type.
+"""
+input JSONFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: JSON
+  """
+  The value is not the one given
+  """
+  ne: JSON
+  """
+  The value is greater than the one given
+  """
+  gt: JSON
+  """
+  The value is less than the one given
+  """
+  lt: JSON
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: JSON
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: JSON
+  """
+  The value is in the given array of values
+  """
+  in: [JSON]
+  """
+  The value is not in the given array of values
+  """
+  nin: [JSON]
+  """
+  A negation of the given filter
+  """
+  not: JSONFilterInput
+}
+
+"""
+Update input for JSON type.
+"""
+input JSONUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: JSON
+  """
+  Append JSON value to the column.
+  """
+  append: JSON
+  """
+  Prepend JSON value to the column.
+  """
+  prepend: JSON
+  """
+  Deletes a key (and its value) from a JSON object, or matching string value(s) from a JSON array.
+  """
+  deleteKey: String
+  """
+  Deletes the array element with specified index (negative integers count from the end). Throws an error if JSON value is not an array.
+  """
+  deleteElem: Int
+  """
+  Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
+  """
+  deleteAtPath: [String!]
+}
+
+"""
+Update input for JSON array type.
+"""
+input JSONArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [JSON]
+  """
+  Append an array value to the column.
+  """
+  append: [JSON]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [JSON]
+}
+
+"""
+Search filter input for String array type.
+"""
+input StringArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [String]
+  """
+  The value is not the one given
+  """
+  ne: [String]
+  """
+  The value is greater than the one given
+  """
+  gt: [String]
+  """
+  The value is less than the one given
+  """
+  lt: [String]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [String]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [String]
+  """
+  The value is in the given array of values
+  """
+  in: [[String]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[String]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [String]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [String]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [String]
+  """
+  A negation of the given filter
+  """
+  not: StringArrayFilterInput
+}
+
+"""
+Search filter input for Int array type.
+"""
+input IntArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [Int]
+  """
+  The value is not the one given
+  """
+  ne: [Int]
+  """
+  The value is greater than the one given
+  """
+  gt: [Int]
+  """
+  The value is less than the one given
+  """
+  lt: [Int]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [Int]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [Int]
+  """
+  The value is in the given array of values
+  """
+  in: [[Int]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[Int]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [Int]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [Int]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [Int]
+  """
+  A negation of the given filter
+  """
+  not: IntArrayFilterInput
+}
+
+"""
+Search filter input for BigInt array type.
+"""
+input BigIntArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [BigInt]
+  """
+  The value is not the one given
+  """
+  ne: [BigInt]
+  """
+  The value is greater than the one given
+  """
+  gt: [BigInt]
+  """
+  The value is less than the one given
+  """
+  lt: [BigInt]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [BigInt]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [BigInt]
+  """
+  The value is in the given array of values
+  """
+  in: [[BigInt]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[BigInt]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [BigInt]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [BigInt]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [BigInt]
+  """
+  A negation of the given filter
+  """
+  not: BigIntArrayFilterInput
+}
+
+"""
+Search filter input for Decimal array type.
+"""
+input DecimalArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [Decimal]
+  """
+  The value is not the one given
+  """
+  ne: [Decimal]
+  """
+  The value is greater than the one given
+  """
+  gt: [Decimal]
+  """
+  The value is less than the one given
+  """
+  lt: [Decimal]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [Decimal]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [Decimal]
+  """
+  The value is in the given array of values
+  """
+  in: [[Decimal]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[Decimal]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [Decimal]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [Decimal]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [Decimal]
+  """
+  A negation of the given filter
+  """
+  not: DecimalArrayFilterInput
+}
+
+"""
+Search filter input for Float array type.
+"""
+input FloatArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [Float]
+  """
+  The value is not the one given
+  """
+  ne: [Float]
+  """
+  The value is greater than the one given
+  """
+  gt: [Float]
+  """
+  The value is less than the one given
+  """
+  lt: [Float]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [Float]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [Float]
+  """
+  The value is in the given array of values
+  """
+  in: [[Float]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[Float]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [Float]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [Float]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [Float]
+  """
+  A negation of the given filter
+  """
+  not: FloatArrayFilterInput
+}
+
+"""
+Search filter input for Boolean array type.
+"""
+input BooleanArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [Boolean]
+  """
+  The value is not the one given
+  """
+  ne: [Boolean]
+  """
+  The value is greater than the one given
+  """
+  gt: [Boolean]
+  """
+  The value is less than the one given
+  """
+  lt: [Boolean]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [Boolean]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [Boolean]
+  """
+  The value is in the given array of values
+  """
+  in: [[Boolean]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[Boolean]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [Boolean]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [Boolean]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [Boolean]
+  """
+  A negation of the given filter
+  """
+  not: BooleanArrayFilterInput
+}
+
+"""
+Search filter input for Bytes array type.
+"""
+input BytesArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [Bytes]
+  """
+  The value is not the one given
+  """
+  ne: [Bytes]
+  """
+  The value is greater than the one given
+  """
+  gt: [Bytes]
+  """
+  The value is less than the one given
+  """
+  lt: [Bytes]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [Bytes]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [Bytes]
+  """
+  The value is in the given array of values
+  """
+  in: [[Bytes]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[Bytes]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [Bytes]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [Bytes]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [Bytes]
+  """
+  A negation of the given filter
+  """
+  not: BytesArrayFilterInput
+}
+
+"""
+Search filter input for JSON array type.
+"""
+input JSONArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [JSON]
+  """
+  The value is not the one given
+  """
+  ne: [JSON]
+  """
+  The value is greater than the one given
+  """
+  gt: [JSON]
+  """
+  The value is less than the one given
+  """
+  lt: [JSON]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [JSON]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [JSON]
+  """
+  The value is in the given array of values
+  """
+  in: [[JSON]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[JSON]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [JSON]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [JSON]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [JSON]
+  """
+  A negation of the given filter
+  """
+  not: JSONArrayFilterInput
+}
+
+"""
+Search filter input for OrderStatusEnum type.
+"""
+input OrderStatusEnumFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: OrderStatusEnum
+  """
+  The value is not the one given
+  """
+  ne: OrderStatusEnum
+  """
+  The value is greater than the one given
+  """
+  gt: OrderStatusEnum
+  """
+  The value is less than the one given
+  """
+  lt: OrderStatusEnum
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: OrderStatusEnum
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: OrderStatusEnum
+  """
+  The value is in the given array of values
+  """
+  in: [OrderStatusEnum]
+  """
+  The value is not in the given array of values
+  """
+  nin: [OrderStatusEnum]
+  """
+  A negation of the given filter
+  """
+  not: OrderStatusEnumFilterInput
+}
+
+"""
+Search filter input for OrderStatusEnum array type.
+"""
+input OrderStatusEnumArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [OrderStatusEnum]
+  """
+  The value is not the one given
+  """
+  ne: [OrderStatusEnum]
+  """
+  The value is greater than the one given
+  """
+  gt: [OrderStatusEnum]
+  """
+  The value is less than the one given
+  """
+  lt: [OrderStatusEnum]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [OrderStatusEnum]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [OrderStatusEnum]
+  """
+  The value is in the given array of values
+  """
+  in: [[OrderStatusEnum]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[OrderStatusEnum]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [OrderStatusEnum]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [OrderStatusEnum]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [OrderStatusEnum]
+  """
+  A negation of the given filter
+  """
+  not: OrderStatusEnumArrayFilterInput
+}
+
+"""
+Update input for OrderStatusEnum type.
+"""
+input OrderStatusEnumUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: OrderStatusEnum
+}
+
+"""
+Update input for OrderStatusEnum array type.
+"""
+input OrderStatusEnumArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [OrderStatusEnum]
+  """
+  Append an array value to the column.
+  """
+  append: [OrderStatusEnum]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [OrderStatusEnum]
+}
+
+"""
+Search filter input for UserRoleEnum type.
+"""
+input UserRoleEnumFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: UserRoleEnum
+  """
+  The value is not the one given
+  """
+  ne: UserRoleEnum
+  """
+  The value is greater than the one given
+  """
+  gt: UserRoleEnum
+  """
+  The value is less than the one given
+  """
+  lt: UserRoleEnum
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: UserRoleEnum
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: UserRoleEnum
+  """
+  The value is in the given array of values
+  """
+  in: [UserRoleEnum]
+  """
+  The value is not in the given array of values
+  """
+  nin: [UserRoleEnum]
+  """
+  A negation of the given filter
+  """
+  not: UserRoleEnumFilterInput
+}
+
+"""
+Search filter input for UserRoleEnum array type.
+"""
+input UserRoleEnumArrayFilterInput @oneOf {
+  """
+  The value is exactly the one given
+  """
+  eq: [UserRoleEnum]
+  """
+  The value is not the one given
+  """
+  ne: [UserRoleEnum]
+  """
+  The value is greater than the one given
+  """
+  gt: [UserRoleEnum]
+  """
+  The value is less than the one given
+  """
+  lt: [UserRoleEnum]
+  """
+  The value is greater than, or equal to the one given
+  """
+  gte: [UserRoleEnum]
+  """
+  The value is less than, or equal to the one given
+  """
+  lte: [UserRoleEnum]
+  """
+  The value is in the given array of values
+  """
+  in: [[UserRoleEnum]]
+  """
+  The value is not in the given array of values
+  """
+  nin: [[UserRoleEnum]]
+  """
+  Checks if the array contains all elements of the provided array
+  """
+  contains: [UserRoleEnum]
+  """
+  Checks if the array is contained within the provided array
+  """
+  contained: [UserRoleEnum]
+  """
+  Checks if the array has any elements in common with the provided array
+  """
+  overlaps: [UserRoleEnum]
+  """
+  A negation of the given filter
+  """
+  not: UserRoleEnumArrayFilterInput
+}
+
+"""
+Update input for UserRoleEnum type.
+"""
+input UserRoleEnumUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: UserRoleEnum
+}
+
+"""
+Update input for UserRoleEnum array type.
+"""
+input UserRoleEnumArrayUpdateInput @oneOf {
+  """
+  Replaces the value of a field with the specified value.
+  """
+  set: [UserRoleEnum]
+  """
+  Append an array value to the column.
+  """
+  append: [UserRoleEnum]
+  """
+  Prepend an array value to the column.
+  """
+  prepend: [UserRoleEnum]
+}
+
+"""
+Specifies the ordering for OrderItem results.
+"""
+input OrderItemOrderByInput @oneOf {
+  """
+  Order orderItems by orderItemId
+  """
+  orderItemId: OrderDirection
+  """
+  Order orderItems by orderId
+  """
+  orderId: OrderDirection
+  """
+  Order orderItems by productId
+  """
+  productId: OrderDirection
+  """
+  Order orderItems by quantity
+  """
+  quantity: OrderDirection
+  """
+  Order orderItems by priceAtPurchase
+  """
+  priceAtPurchase: OrderDirection
+  """
+  Order OrderItem results by Order fields
+  """
+  order: OrderOrderByInput
+  """
+  Order OrderItem results by Product fields
+  """
+  product: ProductOrderByInput
+}
+
+"""
+Input type to select a unique OrderItem with multiple fields
+"""
+input OrderItemOrderIdProductIdInput {
+  """
+  Select by the 'orderId' field
+  """
+  orderId: Int!
+  """
+  Select by the 'productId' field
+  """
+  productId: Int!
+}
+
+"""
+Input type to select a unique OrderItem
+"""
+input OrderItemLookupInput @oneOf {
+  """
+  Select OrderItem by composite columns 'orderId, productId'
+  """
+  orderIdProductId: OrderItemOrderIdProductIdInput
+  """
+  Select by the 'orderItemId' field
+  """
+  orderItemId: Int
+}
+
+"""
+Filter input type for OrderItem collections
+"""
+input OrderItemCollectionFilterInput {
+  """
+  The object is related to an object with the given fields
+  """
+  contains: OrderItemFilterInput
+}
+
+"""
+Filter input type for OrderItem objects.
+"""
+input OrderItemFilterInput @oneOf {
+  """
+  Filter by the given orderItemId
+  """
+  orderItemId: IntFilterInput
+  """
+  Filter by the given orderId
+  """
+  orderId: IntFilterInput
+  """
+  Filter by the given productId
+  """
+  productId: IntFilterInput
+  """
+  Filter by the given quantity
+  """
+  quantity: IntFilterInput
+  """
+  Filter by the given priceAtPurchase
+  """
+  priceAtPurchase: DecimalFilterInput
+  """
+  Filter by the related Order object
+  """
+  order: OrderFilterInput
+  """
+  Filter by the related Product object
+  """
+  product: ProductFilterInput
+  """
+  All of the filters must match
+  """
+  ALL: [OrderItemFilterInput]
+  """
+  None of the filters must match
+  """
+  NONE: [OrderItemFilterInput]
+  """
+  At least one of the filters must match
+  """
+  ANY: [OrderItemFilterInput]
+}
+
+"""
+Input for creating a new OrderItem
+"""
+input OrderItemCreateInput {
+  """
+  Set field value for orderItemId
+  """
+  orderItemId: Int
+  """
+  Set field value for orderId
+  """
+  orderId: Int!
+  """
+  Set field value for productId
+  """
+  productId: Int!
+  """
+  Set field value for quantity
+  """
+  quantity: Int!
+  """
+  Set field value for priceAtPurchase
+  """
+  priceAtPurchase: Decimal!
+}
+
+"""
+Input for updating an existing OrderItem
+"""
+input OrderItemUpdateInput {
+  """
+  Update field value for orderItemId
+  """
+  orderItemId: IntUpdateInput
+  """
+  Update field value for orderId
+  """
+  orderId: IntUpdateInput
+  """
+  Update field value for productId
+  """
+  productId: IntUpdateInput
+  """
+  Update field value for quantity
+  """
+  quantity: IntUpdateInput
+  """
+  Update field value for priceAtPurchase
+  """
+  priceAtPurchase: DecimalUpdateInput
+}
+
+"""
+Specifies the ordering for Order results.
+"""
+input OrderOrderByInput @oneOf {
+  """
+  Order orders by orderId
+  """
+  orderId: OrderDirection
+  """
+  Order orders by userId
+  """
+  userId: OrderDirection
+  """
+  Order orders by orderDate
+  """
+  orderDate: OrderDirection
+  """
+  Order orders by status
+  """
+  status: OrderDirection
+  """
+  Order orders by totalAmount
+  """
+  totalAmount: OrderDirection
+  """
+  Order orders by shippingAddress
+  """
+  shippingAddress: OrderDirection
+  """
+  Order orders by billingAddress
+  """
+  billingAddress: OrderDirection
+  """
+  Order Order results by User fields
+  """
+  user: UserOrderByInput
+  """
+  Order Order results by OrderItem fields
+  """
+  orderItem: OrderItemOrderByInput
+}
+
+"""
+Input type to select a unique Order
+"""
+input OrderLookupInput @oneOf {
+  """
+  Select by the 'orderId' field
+  """
+  orderId: Int
+}
+
+"""
+Filter input type for Order collections
+"""
+input OrderCollectionFilterInput {
+  """
+  The object is related to an object with the given fields
+  """
+  contains: OrderFilterInput
+}
+
+"""
+Filter input type for Order objects.
+"""
+input OrderFilterInput @oneOf {
+  """
+  Filter by the given orderId
+  """
+  orderId: IntFilterInput
+  """
+  Filter by the given userId
+  """
+  userId: IntFilterInput
+  """
+  Filter by the given orderDate
+  """
+  orderDate: StringFilterInput
+  """
+  Filter by the given status
+  """
+  status: OrderStatusEnumFilterInput
+  """
+  Filter by the given totalAmount
+  """
+  totalAmount: DecimalFilterInput
+  """
+  Filter by the given shippingAddress
+  """
+  shippingAddress: StringFilterInput
+  """
+  Filter by the given billingAddress
+  """
+  billingAddress: StringFilterInput
+  """
+  Filter by the related User object
+  """
+  user: UserFilterInput
+  """
+  Filter by the related OrderItem object
+  """
+  orderItem: OrderItemFilterInput
+  """
+  All of the filters must match
+  """
+  ALL: [OrderFilterInput]
+  """
+  None of the filters must match
+  """
+  NONE: [OrderFilterInput]
+  """
+  At least one of the filters must match
+  """
+  ANY: [OrderFilterInput]
+}
+
+"""
+Input for creating a new Order
+"""
+input OrderCreateInput {
+  """
+  Set field value for orderId
+  """
+  orderId: Int
+  """
+  Set field value for userId
+  """
+  userId: Int!
+  """
+  Set field value for orderDate
+  """
+  orderDate: String
+  """
+  Set field value for status
+  """
+  status: OrderStatusEnum
+  """
+  Set field value for totalAmount
+  """
+  totalAmount: Decimal
+  """
+  Set field value for shippingAddress
+  """
+  shippingAddress: String
+  """
+  Set field value for billingAddress
+  """
+  billingAddress: String
+}
+
+"""
+Input for updating an existing Order
+"""
+input OrderUpdateInput {
+  """
+  Update field value for orderId
+  """
+  orderId: IntUpdateInput
+  """
+  Update field value for userId
+  """
+  userId: IntUpdateInput
+  """
+  Update field value for orderDate
+  """
+  orderDate: StringUpdateInput
+  """
+  Update field value for status
+  """
+  status: OrderStatusEnumUpdateInput
+  """
+  Update field value for totalAmount
+  """
+  totalAmount: DecimalUpdateInput
+  """
+  Update field value for shippingAddress
+  """
+  shippingAddress: StringUpdateInput
+  """
+  Update field value for billingAddress
+  """
+  billingAddress: StringUpdateInput
+}
+
+"""
+Specifies the ordering for Product results.
+"""
+input ProductOrderByInput @oneOf {
+  """
+  Order products by productId
+  """
+  productId: OrderDirection
+  """
+  Order products by name
+  """
+  name: OrderDirection
+  """
+  Order products by description
+  """
+  description: OrderDirection
+  """
+  Order products by price
+  """
+  price: OrderDirection
+  """
+  Order products by sku
+  """
+  sku: OrderDirection
+  """
+  Order products by stockQuantity
+  """
+  stockQuantity: OrderDirection
+  """
+  Order products by addedAt
+  """
+  addedAt: OrderDirection
+  """
+  Order Product results by OrderItem fields
+  """
+  orderItem: OrderItemOrderByInput
+}
+
+"""
+Input type to select a unique Product
+"""
+input ProductLookupInput @oneOf {
+  """
+  Select by the 'productId' field
+  """
+  productId: Int
+  """
+  Select by the 'sku' field
+  """
+  sku: String
+}
+
+"""
+Filter input type for Product collections
+"""
+input ProductCollectionFilterInput {
+  """
+  The object is related to an object with the given fields
+  """
+  contains: ProductFilterInput
+}
+
+"""
+Filter input type for Product objects.
+"""
+input ProductFilterInput @oneOf {
+  """
+  Filter by the given productId
+  """
+  productId: IntFilterInput
+  """
+  Filter by the given name
+  """
+  name: StringFilterInput
+  """
+  Filter by the given description
+  """
+  description: StringFilterInput
+  """
+  Filter by the given price
+  """
+  price: DecimalFilterInput
+  """
+  Filter by the given sku
+  """
+  sku: StringFilterInput
+  """
+  Filter by the given stockQuantity
+  """
+  stockQuantity: IntFilterInput
+  """
+  Filter by the given addedAt
+  """
+  addedAt: StringFilterInput
+  """
+  Filter by the related OrderItem object
+  """
+  orderItem: OrderItemFilterInput
+  """
+  All of the filters must match
+  """
+  ALL: [ProductFilterInput]
+  """
+  None of the filters must match
+  """
+  NONE: [ProductFilterInput]
+  """
+  At least one of the filters must match
+  """
+  ANY: [ProductFilterInput]
+}
+
+"""
+Input for creating a new Product
+"""
+input ProductCreateInput {
+  """
+  Set field value for productId
+  """
+  productId: Int
+  """
+  Set field value for name
+  """
+  name: String!
+  """
+  Set field value for description
+  """
+  description: String
+  """
+  Set field value for price
+  """
+  price: Decimal!
+  """
+  Set field value for sku
+  """
+  sku: String
+  """
+  Set field value for stockQuantity
+  """
+  stockQuantity: Int
+  """
+  Set field value for addedAt
+  """
+  addedAt: String
+}
+
+"""
+Input for updating an existing Product
+"""
+input ProductUpdateInput {
+  """
+  Update field value for productId
+  """
+  productId: IntUpdateInput
+  """
+  Update field value for name
+  """
+  name: StringUpdateInput
+  """
+  Update field value for description
+  """
+  description: StringUpdateInput
+  """
+  Update field value for price
+  """
+  price: DecimalUpdateInput
+  """
+  Update field value for sku
+  """
+  sku: StringUpdateInput
+  """
+  Update field value for stockQuantity
+  """
+  stockQuantity: IntUpdateInput
+  """
+  Update field value for addedAt
+  """
+  addedAt: StringUpdateInput
+}
+
+"""
+Specifies the ordering for UserProfile results.
+"""
+input UserProfileOrderByInput @oneOf {
+  """
+  Order userProfiles by profileId
+  """
+  profileId: OrderDirection
+  """
+  Order userProfiles by userId
+  """
+  userId: OrderDirection
+  """
+  Order userProfiles by firstName
+  """
+  firstName: OrderDirection
+  """
+  Order userProfiles by lastName
+  """
+  lastName: OrderDirection
+  """
+  Order userProfiles by bio
+  """
+  bio: OrderDirection
+  """
+  Order userProfiles by dateOfBirth
+  """
+  dateOfBirth: OrderDirection
+  """
+  Order userProfiles by profilePictureUrl
+  """
+  profilePictureUrl: OrderDirection
+  """
+  Order UserProfile results by User fields
+  """
+  user: UserOrderByInput
+}
+
+"""
+Input type to select a unique UserProfile
+"""
+input UserProfileLookupInput @oneOf {
+  """
+  Select by the 'profileId' field
+  """
+  profileId: Int
+  """
+  Select by the 'userId' field
+  """
+  userId: Int
+}
+
+"""
+Filter input type for UserProfile collections
+"""
+input UserProfileCollectionFilterInput {
+  """
+  The object is related to an object with the given fields
+  """
+  contains: UserProfileFilterInput
+}
+
+"""
+Filter input type for UserProfile objects.
+"""
+input UserProfileFilterInput @oneOf {
+  """
+  Filter by the given profileId
+  """
+  profileId: IntFilterInput
+  """
+  Filter by the given userId
+  """
+  userId: IntFilterInput
+  """
+  Filter by the given firstName
+  """
+  firstName: StringFilterInput
+  """
+  Filter by the given lastName
+  """
+  lastName: StringFilterInput
+  """
+  Filter by the given bio
+  """
+  bio: StringFilterInput
+  """
+  Filter by the given dateOfBirth
+  """
+  dateOfBirth: StringFilterInput
+  """
+  Filter by the given profilePictureUrl
+  """
+  profilePictureUrl: StringFilterInput
+  """
+  Filter by the related User object
+  """
+  user: UserFilterInput
+  """
+  All of the filters must match
+  """
+  ALL: [UserProfileFilterInput]
+  """
+  None of the filters must match
+  """
+  NONE: [UserProfileFilterInput]
+  """
+  At least one of the filters must match
+  """
+  ANY: [UserProfileFilterInput]
+}
+
+"""
+Input for creating a new UserProfile
+"""
+input UserProfileCreateInput {
+  """
+  Set field value for profileId
+  """
+  profileId: Int
+  """
+  Set field value for userId
+  """
+  userId: Int!
+  """
+  Set field value for firstName
+  """
+  firstName: String
+  """
+  Set field value for lastName
+  """
+  lastName: String
+  """
+  Set field value for bio
+  """
+  bio: String
+  """
+  Set field value for dateOfBirth
+  """
+  dateOfBirth: String
+  """
+  Set field value for profilePictureUrl
+  """
+  profilePictureUrl: String
+}
+
+"""
+Input for updating an existing UserProfile
+"""
+input UserProfileUpdateInput {
+  """
+  Update field value for profileId
+  """
+  profileId: IntUpdateInput
+  """
+  Update field value for userId
+  """
+  userId: IntUpdateInput
+  """
+  Update field value for firstName
+  """
+  firstName: StringUpdateInput
+  """
+  Update field value for lastName
+  """
+  lastName: StringUpdateInput
+  """
+  Update field value for bio
+  """
+  bio: StringUpdateInput
+  """
+  Update field value for dateOfBirth
+  """
+  dateOfBirth: StringUpdateInput
+  """
+  Update field value for profilePictureUrl
+  """
+  profilePictureUrl: StringUpdateInput
+}
+
+"""
+Specifies the ordering for User results.
+"""
+input UserOrderByInput @oneOf {
+  """
+  Order users by userId
+  """
+  userId: OrderDirection
+  """
+  Order users by email
+  """
+  email: OrderDirection
+  """
+  Order users by passwordHash
+  """
+  passwordHash: OrderDirection
+  """
+  Order users by role
+  """
+  role: OrderDirection
+  """
+  Order users by isActive
+  """
+  isActive: OrderDirection
+  """
+  Order users by createdAt
+  """
+  createdAt: OrderDirection
+  """
+  Order users by updatedAt
+  """
+  updatedAt: OrderDirection
+  """
+  Order User results by UserProfile fields
+  """
+  userProfile: UserProfileOrderByInput
+}
+
+"""
+Input type to select a unique User
+"""
+input UserLookupInput @oneOf {
+  """
+  Select by the 'email' field
+  """
+  email: String
+  """
+  Select by the 'userId' field
+  """
+  userId: Int
+}
+
+"""
+Filter input type for User collections
+"""
+input UserCollectionFilterInput {
+  """
+  The object is related to an object with the given fields
+  """
+  contains: UserFilterInput
+}
+
+"""
+Filter input type for User objects.
+"""
+input UserFilterInput @oneOf {
+  """
+  Filter by the given userId
+  """
+  userId: IntFilterInput
+  """
+  Filter by the given email
+  """
+  email: StringFilterInput
+  """
+  Filter by the given passwordHash
+  """
+  passwordHash: StringFilterInput
+  """
+  Filter by the given role
+  """
+  role: UserRoleEnumFilterInput
+  """
+  Filter by the given isActive
+  """
+  isActive: BooleanFilterInput
+  """
+  Filter by the given createdAt
+  """
+  createdAt: StringFilterInput
+  """
+  Filter by the given updatedAt
+  """
+  updatedAt: StringFilterInput
+  """
+  Filter by the related Order objects
+  """
+  orders: OrderCollectionFilterInput
+  """
+  Filter by the related UserProfile object
+  """
+  userProfile: UserProfileFilterInput
+  """
+  All of the filters must match
+  """
+  ALL: [UserFilterInput]
+  """
+  None of the filters must match
+  """
+  NONE: [UserFilterInput]
+  """
+  At least one of the filters must match
+  """
+  ANY: [UserFilterInput]
+}
+
+"""
+Input for creating a new User
+"""
+input UserCreateInput {
+  """
+  Set field value for userId
+  """
+  userId: Int
+  """
+  Set field value for email
+  """
+  email: String!
+  """
+  Set field value for passwordHash
+  """
+  passwordHash: String!
+  """
+  Set field value for role
+  """
+  role: UserRoleEnum
+  """
+  Set field value for isActive
+  """
+  isActive: Boolean
+  """
+  Set field value for createdAt
+  """
+  createdAt: String
+  """
+  Set field value for updatedAt
+  """
+  updatedAt: String
+}
+
+"""
+Input for updating an existing User
+"""
+input UserUpdateInput {
+  """
+  Update field value for userId
+  """
+  userId: IntUpdateInput
+  """
+  Update field value for email
+  """
+  email: StringUpdateInput
+  """
+  Update field value for passwordHash
+  """
+  passwordHash: StringUpdateInput
+  """
+  Update field value for role
+  """
+  role: UserRoleEnumUpdateInput
+  """
+  Update field value for isActive
+  """
+  isActive: BooleanUpdateInput
+  """
+  Update field value for createdAt
+  """
+  createdAt: StringUpdateInput
+  """
+  Update field value for updatedAt
+  """
+  updatedAt: StringUpdateInput
+}
+
+"""
+Information about pagination in a collection of objects
+"""
+type PageInfo {
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+  """
+  The cursor of the first item in the page
+  """
+  startCursor: String!
+  """
+  The cursor of the last item in the page
+  """
+  endCursor: String!
+}
+
+"""
+Return type containing fields of the mutated or created OrderItem object
+"""
+type OrderItemReturning
+  @pgReturning(type: "OrderItem")
+{
+  """
+  The value of the orderItemId field
+  """
+  orderItemId: Int!
+  """
+  The value of the orderId field
+  """
+  orderId: Int!
+  """
+  The value of the productId field
+  """
+  productId: Int!
+  """
+  The value of the quantity field
+  """
+  quantity: Int!
+  """
+  The value of the priceAtPurchase field
+  """
+  priceAtPurchase: Decimal!
+}
+
+"""
+Return type when creating one OrderItem
+"""
+type OrderItemCreatePayload
+  @pgMutation(type: "OrderItem")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: OrderItemReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when creating many orderItems
+"""
+type OrderItemCreateManyPayload
+  @pgMutation(type: "OrderItem")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [OrderItemReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating one OrderItem
+"""
+type OrderItemUpdatePayload
+  @pgMutation(type: "OrderItem")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: OrderItemReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating many orderItems
+"""
+type OrderItemUpdateManyPayload
+  @pgMutation(type: "OrderItem")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [OrderItemReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting one OrderItem
+"""
+type OrderItemDeletePayload
+  @pgMutation(type: "OrderItem")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: OrderItemReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting many orderItems
+"""
+type OrderItemDeleteManyPayload
+  @pgMutation(type: "OrderItem")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [OrderItemReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+An edge in a connection. Contains the node and its cursor
+"""
+type OrderItemEdge {
+  """
+  The item at the end of the edge
+  """
+  node: OrderItem!
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+}
+
+"""
+The connection type for OrderItem
+"""
+type OrderItemConnection
+  @pgConnection(type: "OrderItem")
+{
+  """
+  A list of edges
+  """
+  edges: [OrderItemEdge!]!
+  """
+  Information to aid in pagination
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+Return type containing fields of the mutated or created Order object
+"""
+type OrderReturning
+  @pgReturning(type: "Order")
+{
+  """
+  The value of the orderId field
+  """
+  orderId: Int!
+  """
+  The value of the userId field
+  """
+  userId: Int!
+  """
+  The value of the orderDate field
+  """
+  orderDate: String
+  """
+  The value of the status field
+  """
+  status: OrderStatusEnum!
+  """
+  The value of the totalAmount field
+  """
+  totalAmount: Decimal
+  """
+  The value of the shippingAddress field
+  """
+  shippingAddress: String
+  """
+  The value of the billingAddress field
+  """
+  billingAddress: String
+}
+
+"""
+Return type when creating one Order
+"""
+type OrderCreatePayload
+  @pgMutation(type: "Order")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: OrderReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when creating many orders
+"""
+type OrderCreateManyPayload
+  @pgMutation(type: "Order")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [OrderReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating one Order
+"""
+type OrderUpdatePayload
+  @pgMutation(type: "Order")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: OrderReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating many orders
+"""
+type OrderUpdateManyPayload
+  @pgMutation(type: "Order")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [OrderReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting one Order
+"""
+type OrderDeletePayload
+  @pgMutation(type: "Order")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: OrderReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting many orders
+"""
+type OrderDeleteManyPayload
+  @pgMutation(type: "Order")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [OrderReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+An edge in a connection. Contains the node and its cursor
+"""
+type OrderEdge {
+  """
+  The item at the end of the edge
+  """
+  node: Order!
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+}
+
+"""
+The connection type for Order
+"""
+type OrderConnection
+  @pgConnection(type: "Order")
+{
+  """
+  A list of edges
+  """
+  edges: [OrderEdge!]!
+  """
+  Information to aid in pagination
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+Return type containing fields of the mutated or created Product object
+"""
+type ProductReturning
+  @pgReturning(type: "Product")
+{
+  """
+  The value of the productId field
+  """
+  productId: Int!
+  """
+  The value of the name field
+  """
+  name: String!
+  """
+  The value of the description field
+  """
+  description: String
+  """
+  The value of the price field
+  """
+  price: Decimal!
+  """
+  The value of the sku field
+  """
+  sku: String
+  """
+  The value of the stockQuantity field
+  """
+  stockQuantity: Int
+  """
+  The value of the addedAt field
+  """
+  addedAt: String
+}
+
+"""
+Return type when creating one Product
+"""
+type ProductCreatePayload
+  @pgMutation(type: "Product")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: ProductReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when creating many products
+"""
+type ProductCreateManyPayload
+  @pgMutation(type: "Product")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [ProductReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating one Product
+"""
+type ProductUpdatePayload
+  @pgMutation(type: "Product")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: ProductReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating many products
+"""
+type ProductUpdateManyPayload
+  @pgMutation(type: "Product")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [ProductReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting one Product
+"""
+type ProductDeletePayload
+  @pgMutation(type: "Product")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: ProductReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting many products
+"""
+type ProductDeleteManyPayload
+  @pgMutation(type: "Product")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [ProductReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+An edge in a connection. Contains the node and its cursor
+"""
+type ProductEdge {
+  """
+  The item at the end of the edge
+  """
+  node: Product!
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+}
+
+"""
+The connection type for Product
+"""
+type ProductConnection
+  @pgConnection(type: "Product")
+{
+  """
+  A list of edges
+  """
+  edges: [ProductEdge!]!
+  """
+  Information to aid in pagination
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+Return type containing fields of the mutated or created UserProfile object
+"""
+type UserProfileReturning
+  @pgReturning(type: "UserProfile")
+{
+  """
+  The value of the profileId field
+  """
+  profileId: Int!
+  """
+  The value of the userId field
+  """
+  userId: Int!
+  """
+  The value of the firstName field
+  """
+  firstName: String
+  """
+  The value of the lastName field
+  """
+  lastName: String
+  """
+  The value of the bio field
+  """
+  bio: String
+  """
+  The value of the dateOfBirth field
+  """
+  dateOfBirth: String
+  """
+  The value of the profilePictureUrl field
+  """
+  profilePictureUrl: String
+}
+
+"""
+Return type when creating one UserProfile
+"""
+type UserProfileCreatePayload
+  @pgMutation(type: "UserProfile")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: UserProfileReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when creating many userProfiles
+"""
+type UserProfileCreateManyPayload
+  @pgMutation(type: "UserProfile")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [UserProfileReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating one UserProfile
+"""
+type UserProfileUpdatePayload
+  @pgMutation(type: "UserProfile")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: UserProfileReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating many userProfiles
+"""
+type UserProfileUpdateManyPayload
+  @pgMutation(type: "UserProfile")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [UserProfileReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting one UserProfile
+"""
+type UserProfileDeletePayload
+  @pgMutation(type: "UserProfile")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: UserProfileReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting many userProfiles
+"""
+type UserProfileDeleteManyPayload
+  @pgMutation(type: "UserProfile")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [UserProfileReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+An edge in a connection. Contains the node and its cursor
+"""
+type UserProfileEdge {
+  """
+  The item at the end of the edge
+  """
+  node: UserProfile!
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+}
+
+"""
+The connection type for UserProfile
+"""
+type UserProfileConnection
+  @pgConnection(type: "UserProfile")
+{
+  """
+  A list of edges
+  """
+  edges: [UserProfileEdge!]!
+  """
+  Information to aid in pagination
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+Return type containing fields of the mutated or created User object
+"""
+type UserReturning
+  @pgReturning(type: "User")
+{
+  """
+  The value of the userId field
+  """
+  userId: Int!
+  """
+  The value of the email field
+  """
+  email: String!
+  """
+  The value of the passwordHash field
+  """
+  passwordHash: String!
+  """
+  The value of the role field
+  """
+  role: UserRoleEnum!
+  """
+  The value of the isActive field
+  """
+  isActive: Boolean
+  """
+  The value of the createdAt field
+  """
+  createdAt: String
+  """
+  The value of the updatedAt field
+  """
+  updatedAt: String
+}
+
+"""
+Return type when creating one User
+"""
+type UserCreatePayload
+  @pgMutation(type: "User")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: UserReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when creating many users
+"""
+type UserCreateManyPayload
+  @pgMutation(type: "User")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [UserReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating one User
+"""
+type UserUpdatePayload
+  @pgMutation(type: "User")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: UserReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when updating many users
+"""
+type UserUpdateManyPayload
+  @pgMutation(type: "User")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [UserReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting one User
+"""
+type UserDeletePayload
+  @pgMutation(type: "User")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: UserReturning
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+Return type when deleting many users
+"""
+type UserDeleteManyPayload
+  @pgMutation(type: "User")
+{
+  """
+  Returned item(s) from the mutation
+  """
+  returning: [UserReturning]!
+  """
+  The number of rows mutated
+  """
+  rowCount: Int!
+}
+
+"""
+An edge in a connection. Contains the node and its cursor
+"""
+type UserEdge {
+  """
+  The item at the end of the edge
+  """
+  node: User!
+  """
+  A cursor for use in pagination
+  """
+  cursor: String!
+}
+
+"""
+The connection type for User
+"""
+type UserConnection
+  @pgConnection(type: "User")
+{
+  """
+  A list of edges
+  """
+  edges: [UserEdge!]!
+  """
+  Information to aid in pagination
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+Acts as a junction table to link orders and products, representing the items included in each order. Establishes a many-to-many relationship between orders and products.
+"""
+type OrderItem
+  @pgTable(name: "order_items")
+  @pgKey(fields: ["orderId", "productId"], type: UNIQUE)
+  @pgKey(fields: ["orderItemId"], type: PRIMARY)
+{
+  """
+  Unique identifier for the specific item within an order (Primary Key).
+  """
+  orderItemId: Int! @pgColumn(name: "order_item_id", type: INT)
+  """
+  Foreign key referencing the order this item belongs to.
+  """
+  orderId: Int! @pgColumn(name: "order_id", type: INT)
+  """
+  Foreign key referencing the product included in this order item.
+  """
+  productId: Int! @pgColumn(name: "product_id", type: INT)
+  """
+  The number of units of the product ordered. Must be greater than zero.
+  """
+  quantity: Int! @pgColumn(name: "quantity", type: INT)
+  """
+  The price of the product per unit at the time the order was placed.
+  """
+  priceAtPurchase: Decimal! @pgColumn(name: "price_at_purchase", type: NUMERIC)
+  """
+  Ensures order_id references a valid order. Deletes item if order is deleted.
+  """
+  order: Order! @pgRelation(name: "fk_order", fields: ["orderId"], references: ["orderId"])
+  """
+  Ensures product_id references a valid product. Prevents product deletion if it exists in any order item.
+  """
+  product: Product! @pgRelation(name: "fk_product", fields: ["productId"], references: ["productId"])
+}
+
+"""
+Stores information about orders placed by users. Has a one-to-many relationship with the users table.
+"""
+type Order
+  @pgTable(name: "orders")
+  @pgKey(fields: ["orderId"], type: PRIMARY)
+{
+  """
+  Unique identifier for the order (Primary Key).
+  """
+  orderId: Int! @pgColumn(name: "order_id", type: INT)
+  """
+  Foreign key referencing the user who placed the order.
+  """
+  userId: Int! @pgColumn(name: "user_id", type: INT)
+  """
+  Timestamp when the order was placed.
+  """
+  orderDate: String @pgColumn(name: "order_date", type: TIMESTAMPTZ)
+  """
+  Current status of the order (e.g., pending, shipped). References order_status_enum.
+  """
+  status: OrderStatusEnum! @pgColumn(name: "status", type: ENUM)
+  """
+  The total calculated amount for the order.
+  """
+  totalAmount: Decimal @pgColumn(name: "total_amount", type: NUMERIC)
+  """
+  The address where the order should be shipped.
+  """
+  shippingAddress: String @pgColumn(name: "shipping_address", type: TEXT)
+  """
+  The address associated with the payment method.
+  """
+  billingAddress: String @pgColumn(name: "billing_address", type: TEXT)
+  """
+  Ensures that the user_id in orders refers to a valid user_id in the users table. Prevents user deletion if they have orders.
+  """
+  user: User! @pgRelation(name: "fk_user_order", fields: ["userId"], references: ["userId"])
+  """
+  Ensures order_id references a valid order. Deletes item if order is deleted.
+  """
+  orderItem: OrderItem @pgRelation(name: "fk_order")
+}
+
+"""
+Stores details about the products offered in the store.
+"""
+type Product
+  @pgTable(name: "products")
+  @pgKey(fields: ["productId"], type: PRIMARY)
+  @pgKey(fields: ["sku"], type: UNIQUE)
+{
+  """
+  Unique identifier for the product (Primary Key).
+  """
+  productId: Int! @pgColumn(name: "product_id", type: INT)
+  """
+  Name of the product.
+  """
+  name: String! @pgColumn(name: "name", type: VARCHAR)
+  """
+  Detailed description of the product.
+  """
+  description: String @pgColumn(name: "description", type: TEXT)
+  """
+  Price of the product (Numeric with 2 decimal places). Must be non-negative.
+  """
+  price: Decimal! @pgColumn(name: "price", type: NUMERIC)
+  """
+  Stock Keeping Unit - a unique identifier for inventory management.
+  """
+  sku: String @pgColumn(name: "sku", type: VARCHAR)
+  """
+  Current quantity of the product in stock. Must be non-negative.
+  """
+  stockQuantity: Int @pgColumn(name: "stock_quantity", type: INT)
+  """
+  Timestamp when the product was added to the store.
+  """
+  addedAt: String @pgColumn(name: "added_at", type: TIMESTAMPTZ)
+  """
+  Ensures product_id references a valid product. Prevents product deletion if it exists in any order item.
+  """
+  orderItem: OrderItem @pgRelation(name: "fk_product")
+}
+
+"""
+Stores supplementary profile information for users. Has a one-to-one relationship with the users table.
+"""
+type UserProfile
+  @pgTable(name: "user_profiles")
+  @pgKey(fields: ["profileId"], type: PRIMARY)
+  @pgKey(fields: ["userId"], type: UNIQUE)
+{
+  """
+  Unique identifier for the user profile (Primary Key).
+  """
+  profileId: Int! @pgColumn(name: "profile_id", type: INT)
+  """
+  Foreign key referencing the associated user in the users table (Unique, enforces 1:1).
+  """
+  userId: Int! @pgColumn(name: "user_id", type: INT)
+  """
+  User's first name.
+  """
+  firstName: String @pgColumn(name: "first_name", type: VARCHAR)
+  """
+  User's last name.
+  """
+  lastName: String @pgColumn(name: "last_name", type: VARCHAR)
+  """
+  A short biography or description provided by the user.
+  """
+  bio: String @pgColumn(name: "bio", type: TEXT)
+  """
+  User's date of birth.
+  """
+  dateOfBirth: String @pgColumn(name: "date_of_birth", type: DATE)
+  """
+  URL pointing to the user's profile picture.
+  """
+  profilePictureUrl: String @pgColumn(name: "profile_picture_url", type: VARCHAR)
+  """
+  Ensures that the user_id in user_profiles refers to a valid user_id in the users table. Deletes profile if user is deleted.
+  """
+  user: User! @pgRelation(name: "fk_user", fields: ["userId"], references: ["userId"])
+}
+
+"""
+Stores core user account information, including login credentials and role.
+"""
+type User
+  @pgTable(name: "users")
+  @pgKey(fields: ["email"], type: UNIQUE)
+  @pgKey(fields: ["userId"], type: PRIMARY)
+{
+  """
+  Unique identifier for the user (Primary Key).
+  """
+  userId: Int! @pgColumn(name: "user_id", type: INT)
+  """
+  User's email address, used for login (must be unique).
+  """
+  email: String! @pgColumn(name: "email", type: VARCHAR)
+  """
+  Hashed representation of the user's password.
+  """
+  passwordHash: String! @pgColumn(name: "password_hash", type: VARCHAR)
+  """
+  Role assigned to the user (e.g., customer, admin). References user_role_enum.
+  """
+  role: UserRoleEnum! @pgColumn(name: "role", type: ENUM)
+  """
+  Flag indicating if the user account is active.
+  """
+  isActive: Boolean @pgColumn(name: "is_active", type: BOOLEAN)
+  """
+  Timestamp when the user account was created.
+  """
+  createdAt: String @pgColumn(name: "created_at", type: TIMESTAMPTZ)
+  """
+  Timestamp when the user account was last updated.
+  """
+  updatedAt: String @pgColumn(name: "updated_at", type: TIMESTAMPTZ)
+  """
+  Ensures that the user_id in orders refers to a valid user_id in the users table. Prevents user deletion if they have orders.
+  """
+  orders(
+    """
+    Filter the related Order instances
+    """
+    filter: OrderFilterInput,
+    """
+    Select the first Order instances
+    """
+    first: Int,
+    """
+    Select the last Order instances
+    """
+    last: Int,
+    """
+    Select the Order instances before the given cursor
+    """
+    before: String,
+    """
+    Select the Order instances after the given cursor
+    """
+    after: String,
+    """
+    Order the Order instances by the given fields
+    """
+    orderBy: [OrderOrderByInput!],
+  ): OrderConnection! @pgRelation(name: "fk_user_order")
+  """
+  Ensures that the user_id in user_profiles refers to a valid user_id in the users table. Deletes profile if user is deleted.
+  """
+  userProfile: UserProfile @pgRelation(name: "fk_user")
+}
+
+type Query {
+  """
+  Query a unique OrderItem
+  """
+  orderItem(
+    """
+    Input for unique OrderItem lookup
+    """
+    lookup: OrderItemLookupInput!,
+  ): OrderItem @pgSelectOne
+  """
+  Query and paginate multiple orderItems
+  """
+  orderItems(
+    """
+    Filter for OrderItem
+    """
+    filter: OrderItemFilterInput,
+    """
+    Limit the number of results, from the beginning
+    """
+    first: Int,
+    """
+    Limit the number of results, from the end
+    """
+    last: Int,
+    """
+    Cursor for pagination, select items before the cursor. Use together with `last`.
+    """
+    before: String,
+    """
+    Cursor for pagination, select items after the cursor. Use together with `first`.
+    """
+    after: String,
+    """
+    Order the results by selected fields
+    """
+    orderBy: [OrderItemOrderByInput!],
+  ): OrderItemConnection! @pgSelectMany
+  """
+  Query a unique Order
+  """
+  order(
+    """
+    Input for unique Order lookup
+    """
+    lookup: OrderLookupInput!,
+  ): Order @pgSelectOne
+  """
+  Query and paginate multiple orders
+  """
+  orders(
+    """
+    Filter for Order
+    """
+    filter: OrderFilterInput,
+    """
+    Limit the number of results, from the beginning
+    """
+    first: Int,
+    """
+    Limit the number of results, from the end
+    """
+    last: Int,
+    """
+    Cursor for pagination, select items before the cursor. Use together with `last`.
+    """
+    before: String,
+    """
+    Cursor for pagination, select items after the cursor. Use together with `first`.
+    """
+    after: String,
+    """
+    Order the results by selected fields
+    """
+    orderBy: [OrderOrderByInput!],
+  ): OrderConnection! @pgSelectMany
+  """
+  Query a unique Product
+  """
+  product(
+    """
+    Input for unique Product lookup
+    """
+    lookup: ProductLookupInput!,
+  ): Product @pgSelectOne
+  """
+  Query and paginate multiple products
+  """
+  products(
+    """
+    Filter for Product
+    """
+    filter: ProductFilterInput,
+    """
+    Limit the number of results, from the beginning
+    """
+    first: Int,
+    """
+    Limit the number of results, from the end
+    """
+    last: Int,
+    """
+    Cursor for pagination, select items before the cursor. Use together with `last`.
+    """
+    before: String,
+    """
+    Cursor for pagination, select items after the cursor. Use together with `first`.
+    """
+    after: String,
+    """
+    Order the results by selected fields
+    """
+    orderBy: [ProductOrderByInput!],
+  ): ProductConnection! @pgSelectMany
+  """
+  Query a unique UserProfile
+  """
+  userProfile(
+    """
+    Input for unique UserProfile lookup
+    """
+    lookup: UserProfileLookupInput!,
+  ): UserProfile @pgSelectOne
+  """
+  Query and paginate multiple userProfiles
+  """
+  userProfiles(
+    """
+    Filter for UserProfile
+    """
+    filter: UserProfileFilterInput,
+    """
+    Limit the number of results, from the beginning
+    """
+    first: Int,
+    """
+    Limit the number of results, from the end
+    """
+    last: Int,
+    """
+    Cursor for pagination, select items before the cursor. Use together with `last`.
+    """
+    before: String,
+    """
+    Cursor for pagination, select items after the cursor. Use together with `first`.
+    """
+    after: String,
+    """
+    Order the results by selected fields
+    """
+    orderBy: [UserProfileOrderByInput!],
+  ): UserProfileConnection! @pgSelectMany
+  """
+  Query a unique User
+  """
+  user(
+    """
+    Input for unique User lookup
+    """
+    lookup: UserLookupInput!,
+  ): User @pgSelectOne
+  """
+  Query and paginate multiple users
+  """
+  users(
+    """
+    Filter for User
+    """
+    filter: UserFilterInput,
+    """
+    Limit the number of results, from the beginning
+    """
+    first: Int,
+    """
+    Limit the number of results, from the end
+    """
+    last: Int,
+    """
+    Cursor for pagination, select items before the cursor. Use together with `last`.
+    """
+    before: String,
+    """
+    Cursor for pagination, select items after the cursor. Use together with `first`.
+    """
+    after: String,
+    """
+    Order the results by selected fields
+    """
+    orderBy: [UserOrderByInput!],
+  ): UserConnection! @pgSelectMany
+}
+
+type Mutation {
+  """
+  Create a single OrderItem
+  """
+  orderItemCreate(
+    """
+    Input for creating a single OrderItem
+    """
+    input: OrderItemCreateInput!,
+  ): OrderItemCreatePayload! @pgInsertOne
+  """
+  Create multiple orderItems
+  """
+  orderItemCreateMany(
+    """
+    Input for creating multiple OrderItem instances
+    """
+    input: [OrderItemCreateInput!]!,
+  ): OrderItemCreateManyPayload! @pgInsertMany
+  """
+  Update a unique OrderItem
+  """
+  orderItemUpdate(
+    """
+    Lookup input for unique OrderItem update
+    """
+    lookup: OrderItemLookupInput!,
+    """
+    Input for updating a OrderItem
+    """
+    input: OrderItemUpdateInput!,
+  ): OrderItemUpdatePayload! @pgUpdateOne
+  """
+  Update multiple orderItems
+  """
+  orderItemUpdateMany(
+    """
+    Filter for updating multiple OrderItem instances
+    """
+    filter: OrderItemFilterInput,
+    """
+    Input for updating multiple OrderItem instances
+    """
+    input: OrderItemUpdateInput!,
+  ): OrderItemUpdateManyPayload! @pgUpdateMany
+  """
+  Delete a unique OrderItem
+  """
+  orderItemDelete(
+    """
+    Lookup input for unique OrderItem deletion
+    """
+    lookup: OrderItemLookupInput!,
+  ): OrderItemDeletePayload! @pgDeleteOne
+  """
+  Delete multiple orderItems
+  """
+  orderItemDeleteMany(
+    """
+    Filter for OrderItem deletion
+    """
+    filter: OrderItemFilterInput,
+  ): OrderItemDeleteManyPayload! @pgDeleteMany
+  """
+  Create a single Order
+  """
+  orderCreate(
+    """
+    Input for creating a single Order
+    """
+    input: OrderCreateInput!,
+  ): OrderCreatePayload! @pgInsertOne
+  """
+  Create multiple orders
+  """
+  orderCreateMany(
+    """
+    Input for creating multiple Order instances
+    """
+    input: [OrderCreateInput!]!,
+  ): OrderCreateManyPayload! @pgInsertMany
+  """
+  Update a unique Order
+  """
+  orderUpdate(
+    """
+    Lookup input for unique Order update
+    """
+    lookup: OrderLookupInput!,
+    """
+    Input for updating a Order
+    """
+    input: OrderUpdateInput!,
+  ): OrderUpdatePayload! @pgUpdateOne
+  """
+  Update multiple orders
+  """
+  orderUpdateMany(
+    """
+    Filter for updating multiple Order instances
+    """
+    filter: OrderFilterInput,
+    """
+    Input for updating multiple Order instances
+    """
+    input: OrderUpdateInput!,
+  ): OrderUpdateManyPayload! @pgUpdateMany
+  """
+  Delete a unique Order
+  """
+  orderDelete(
+    """
+    Lookup input for unique Order deletion
+    """
+    lookup: OrderLookupInput!,
+  ): OrderDeletePayload! @pgDeleteOne
+  """
+  Delete multiple orders
+  """
+  orderDeleteMany(
+    """
+    Filter for Order deletion
+    """
+    filter: OrderFilterInput,
+  ): OrderDeleteManyPayload! @pgDeleteMany
+  """
+  Create a single Product
+  """
+  productCreate(
+    """
+    Input for creating a single Product
+    """
+    input: ProductCreateInput!,
+  ): ProductCreatePayload! @pgInsertOne
+  """
+  Create multiple products
+  """
+  productCreateMany(
+    """
+    Input for creating multiple Product instances
+    """
+    input: [ProductCreateInput!]!,
+  ): ProductCreateManyPayload! @pgInsertMany
+  """
+  Update a unique Product
+  """
+  productUpdate(
+    """
+    Lookup input for unique Product update
+    """
+    lookup: ProductLookupInput!,
+    """
+    Input for updating a Product
+    """
+    input: ProductUpdateInput!,
+  ): ProductUpdatePayload! @pgUpdateOne
+  """
+  Update multiple products
+  """
+  productUpdateMany(
+    """
+    Filter for updating multiple Product instances
+    """
+    filter: ProductFilterInput,
+    """
+    Input for updating multiple Product instances
+    """
+    input: ProductUpdateInput!,
+  ): ProductUpdateManyPayload! @pgUpdateMany
+  """
+  Delete a unique Product
+  """
+  productDelete(
+    """
+    Lookup input for unique Product deletion
+    """
+    lookup: ProductLookupInput!,
+  ): ProductDeletePayload! @pgDeleteOne
+  """
+  Delete multiple products
+  """
+  productDeleteMany(
+    """
+    Filter for Product deletion
+    """
+    filter: ProductFilterInput,
+  ): ProductDeleteManyPayload! @pgDeleteMany
+  """
+  Create a single UserProfile
+  """
+  userProfileCreate(
+    """
+    Input for creating a single UserProfile
+    """
+    input: UserProfileCreateInput!,
+  ): UserProfileCreatePayload! @pgInsertOne
+  """
+  Create multiple userProfiles
+  """
+  userProfileCreateMany(
+    """
+    Input for creating multiple UserProfile instances
+    """
+    input: [UserProfileCreateInput!]!,
+  ): UserProfileCreateManyPayload! @pgInsertMany
+  """
+  Update a unique UserProfile
+  """
+  userProfileUpdate(
+    """
+    Lookup input for unique UserProfile update
+    """
+    lookup: UserProfileLookupInput!,
+    """
+    Input for updating a UserProfile
+    """
+    input: UserProfileUpdateInput!,
+  ): UserProfileUpdatePayload! @pgUpdateOne
+  """
+  Update multiple userProfiles
+  """
+  userProfileUpdateMany(
+    """
+    Filter for updating multiple UserProfile instances
+    """
+    filter: UserProfileFilterInput,
+    """
+    Input for updating multiple UserProfile instances
+    """
+    input: UserProfileUpdateInput!,
+  ): UserProfileUpdateManyPayload! @pgUpdateMany
+  """
+  Delete a unique UserProfile
+  """
+  userProfileDelete(
+    """
+    Lookup input for unique UserProfile deletion
+    """
+    lookup: UserProfileLookupInput!,
+  ): UserProfileDeletePayload! @pgDeleteOne
+  """
+  Delete multiple userProfiles
+  """
+  userProfileDeleteMany(
+    """
+    Filter for UserProfile deletion
+    """
+    filter: UserProfileFilterInput,
+  ): UserProfileDeleteManyPayload! @pgDeleteMany
+  """
+  Create a single User
+  """
+  userCreate(
+    """
+    Input for creating a single User
+    """
+    input: UserCreateInput!,
+  ): UserCreatePayload! @pgInsertOne
+  """
+  Create multiple users
+  """
+  userCreateMany(
+    """
+    Input for creating multiple User instances
+    """
+    input: [UserCreateInput!]!,
+  ): UserCreateManyPayload! @pgInsertMany
+  """
+  Update a unique User
+  """
+  userUpdate(
+    """
+    Lookup input for unique User update
+    """
+    lookup: UserLookupInput!,
+    """
+    Input for updating a User
+    """
+    input: UserUpdateInput!,
+  ): UserUpdatePayload! @pgUpdateOne
+  """
+  Update multiple users
+  """
+  userUpdateMany(
+    """
+    Filter for updating multiple User instances
+    """
+    filter: UserFilterInput,
+    """
+    Input for updating multiple User instances
+    """
+    input: UserUpdateInput!,
+  ): UserUpdateManyPayload! @pgUpdateMany
+  """
+  Delete a unique User
+  """
+  userDelete(
+    """
+    Lookup input for unique User deletion
+    """
+    lookup: UserLookupInput!,
+  ): UserDeletePayload! @pgDeleteOne
+  """
+  Delete multiple users
+  """
+  userDeleteMany(
+    """
+    Filter for User deletion
+    """
+    filter: UserFilterInput,
+  ): UserDeleteManyPayload! @pgDeleteMany
+}
+
+

@@ -1,0 +1,12 @@
+[graph]
+introspection = true
+
+[extensions.postgres]
+version = "0.1.0"
+
+[[extensions.postgres.config.databases]]
+name = "default"
+url = "postgres://postgres:grafbase@localhost:5432/postgres"
+
+[subgraphs.postgres]
+schema_path = "./subgraph.graphql"
